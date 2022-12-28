@@ -5,7 +5,7 @@ import time
 import datetime
 
 import logging
-logging.basicConfig(filename='./log/status_logger.log', level=logging.DEBUG, format='%(asctime)s %(name)s %(message)s')
+logging.basicConfig(filename="./log/status_logger.log", level=logging.DEBUG, format='%(asctime)s %(name)s %(message)s')
 
 
 def load_conf(file):
@@ -62,12 +62,11 @@ def call_api(time, tries=None):
         logging.debug("Call failed for the 5th time, aborting")
 
 
-#schedule.every().day.at("00:00").do(call_api, "00")
-#schedule.every().day.at("08:00").do(call_api, "08")
-#schedule.every().day.at("12:00").do(call_api, "12")
-#schedule.every().day.at("16:00").do(call_api, "16")
-#schedule.every().day.at("20:00").do(call_api, "20")
-schedule.every().minute.do(call_api, "test")
+schedule.every().day.at("00:00").do(call_api, "00")
+schedule.every().day.at("08:00").do(call_api, "08")
+schedule.every().day.at("12:00").do(call_api, "12")
+schedule.every().day.at("16:00").do(call_api, "16")
+schedule.every().day.at("20:00").do(call_api, "20")
 
 
 def main():

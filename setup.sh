@@ -5,5 +5,5 @@ apt install python3-pip
 pip3 install requests
 pip3 install schedule
 
-mkdir log
-mkdir out
+mkdir -m 777 log
+mkdir -m 777 out
