@@ -46,20 +46,24 @@ def call_api(time, tries=None):
     else:
         logging.debug("Calling api at try " + str(tries))
 
-    response = requests.get(config["url"] + config["accesskey"])
-    data = json.loads(response.text)
+    try:
+        response = requests.get(config["url"] + config["accesskey"])
+        data = json.loads(response.text)
 
-    if data["success"]:
-        logging.debug("Code: " + str(response.status_code))
-        logging.debug("Call successfull")
-        write_json(data["data"], time)
-    elif tries <= 5:
-        logging.debug("Code: " + str(response.status_code))
-        logging.debug("Call failed, retry")
-        call_api(time, tries+1)
-    else:
-        logging.debug("Code: " + str(response.status_code))
-        logging.debug("Call failed for the 5th time, aborting")
+        if data["success"]:
+            logging.debug("Code: " + str(response.status_code))
+            logging.debug("Call successfull")
+            write_json(data["data"], time)
+        elif tries <= 5:
+            logging.debug("Code: " + str(response.status_code))
+            logging.debug("Call failed, retry. Caused by: " + str(response.reason))
+            call_api(time, tries+1)
+        else:
+            logging.debug("Code: " + str(response.status_code))
+            logging.debug("Call failed for the 5th time, aborting")
+
+    except ConnectionError as e:
+        raise e
 
 
 schedule.every().day.at("00:00").do(call_api, "00")
@@ -74,8 +78,12 @@ def main():
     global config
     config = load_conf('config.json')
     while 1:
-        schedule.run_pending()
-        time.sleep(1)
+        try:
+            schedule.run_pending()
+            time.sleep(1)
+        except Exception as e:
+            logging.debug("An Error occured: " + str(e))
+            time.sleep(1)
 
 
 if __name__ == "__main__":
